@@ -1,3 +1,12 @@
 data
 output
 src/helpers/config.R
+_targets/
+renv/
+renv.lock
+.Rprofile
+*.Rproj
+.Rproj.user
+.Rhistory
+lib/
+logs/
