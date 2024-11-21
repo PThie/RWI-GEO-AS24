@@ -116,3 +116,22 @@ targets_preparation_folders <- rlang::list2(
 		creating_folder_structure()
 	)
 )
+
+#--------------------------------------------------
+# Pipeline stats
+
+targets_pipeline_stats <- rlang::list2(
+	tar_file(
+		pipeline_stats,
+		helpers_monitoring_pipeline(),
+		cue = tar_cue(mode = "always")
+	)
+)
+
+#--------------------------------------------------
+# combine all
+
+rlang::list2(
+	targets_preparation_folders,
+	targets_pipeline_stats
+)
