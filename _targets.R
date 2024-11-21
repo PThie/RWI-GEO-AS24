@@ -101,3 +101,18 @@ for (sub_directory in sub_directories) {
         lapply(files, source)
     }
 }
+
+###################################################
+# ACTUAL PIPELINE
+###################################################
+
+#--------------------------------------------------
+# Folder generation
+
+targets_preparation_folders <- rlang::list2(
+	# Creating empty folders for upcoming version
+	tar_target(
+		empty_folders,
+		creating_folder_structure()
+	)
+)
