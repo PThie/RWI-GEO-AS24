@@ -20,6 +20,9 @@ suppressPackageStartupMessages({
     library(stringr)
     library(fst)
     library(crew)
+    library(data.table)
+    library(glue)
+    library(purrr)
 })
 
 #----------------------------------------------
@@ -118,6 +121,21 @@ targets_preparation_folders <- rlang::list2(
 )
 
 #--------------------------------------------------
+# Preparation AS data
+
+targets_preparation_auto_data <- rlang::list2(
+	tar_file_read(
+		auto_data_raw,
+		file.path(
+            config_paths()[["data_path"]],
+            "raw",
+            config_globals()[["current_delivery"]]
+        ),
+		reading_auto_data(!!.x)
+	)
+)
+
+#--------------------------------------------------
 # Pipeline stats
 
 targets_pipeline_stats <- rlang::list2(
@@ -133,5 +151,6 @@ targets_pipeline_stats <- rlang::list2(
 
 rlang::list2(
 	targets_preparation_folders,
-	targets_pipeline_stats
+	targets_pipeline_stats,
+    targets_preparation_auto_data
 )
