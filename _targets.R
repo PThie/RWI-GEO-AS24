@@ -18,6 +18,7 @@ suppressPackageStartupMessages({
     library(here)
     library(tarchetypes)
     library(stringr)
+    library(stringi)
     library(fst)
     library(crew)
     library(data.table)
