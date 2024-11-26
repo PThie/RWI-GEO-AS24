@@ -26,7 +26,8 @@ reading_auto_data <- function(
     data_storage <- list()
     for (file in files) {
         dta <- data.table::fread(
-            file
+            file,
+            encoding = "UTF-8"
         )
         data_storage[[file]] <- dta
     }
