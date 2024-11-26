@@ -10,3 +10,4 @@ renv.lock
 .Rhistory
 lib/
 logs/
+documentation/
