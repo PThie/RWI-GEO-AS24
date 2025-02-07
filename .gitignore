@@ -11,3 +11,5 @@ renv.lock
 lib/
 logs/
 documentation/
+.lintr
+vertrag_autoscout/
