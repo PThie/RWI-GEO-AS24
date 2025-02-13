@@ -133,7 +133,13 @@ targets_preparation_auto_data <- rlang::list2(
             config_globals()[["current_delivery"]]
         ),
 		reading_auto_data(!!.x)
-	)
+	),
+    tar_fst(
+        auto_data_cleaned,
+        cleaning_auto_data(
+            auto_data_raw = auto_data_raw
+        )
+    )
 )
 
 #--------------------------------------------------
