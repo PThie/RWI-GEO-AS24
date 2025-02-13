@@ -8,7 +8,7 @@ creating_folder_structure <- function() {
     #' @author Patrick Thiel
 
     #--------------------------------------------------
-    # create main folder
+    # create output folder
 
     if (!dir.exists(config_paths()[["output_path"]])) {
         dir.create(
@@ -16,10 +16,11 @@ creating_folder_structure <- function() {
             recursive = TRUE
         )
     }
-    #--------------------------------------------------
-    # create type folders with subdirectories
 
-    for (folder in config_globals()[["folders"]]) {
+    #--------------------------------------------------
+    # create subdirectories within output folder
+
+    for (folder in config_globals()[["output_folders"]]) {
         directory <- file.path(
             config_paths()[["output_path"]],
             folder
@@ -28,6 +29,46 @@ creating_folder_structure <- function() {
         if (!dir.exists(directory)) {
             dir.create(directory, recursive = TRUE)
         }
+    }
+
+    #--------------------------------------------------
+    # create data folders
+
+    for (folder in config_globals()[["data_folders"]]) {
+        directory <- file.path(
+            config_paths()[["data_path"]],
+            folder
+        )
+
+        if (!dir.exists(directory)) {
+            dir.create(directory, recursive = TRUE)
+        }
+    }
+
+    #--------------------------------------------------
+    # create subdirectories within data folders
+
+    directory_suf <- file.path(
+        config_paths()[["data_path"]],
+        "SUF",
+        config_globals()[["next_version"]]
+    )
+
+    if (!dir.exists(directory_suf)) {
+        dir.create(directory_suf, recursive = TRUE)
+    }
+
+    directory_processed <- file.path(
+        config_paths()[["data_path"]],
+        "processed",
+        paste0(
+            "Lieferung_",
+            config_globals()[["current_delivery"]]
+        )
+    )
+
+    if (!dir.exists(directory_processed)) {
+        dir.create(directory_processed, recursive = TRUE)
     }
 
     #--------------------------------------------------
