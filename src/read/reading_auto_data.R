@@ -47,7 +47,8 @@ reading_auto_data <- function(
         length(unique(num_cols)) == 1,
         msg = glue::glue(
             "!!! WARNING:
-            Number of columns in all partitions is not the same: {unique(num_cols)}"
+            Number of columns in all partitions is not the same: {unique(num_cols)}",
+            " (Error code: rad#1)"
         )
     )
 
@@ -55,7 +56,8 @@ reading_auto_data <- function(
         length(unique(names_cols)) == 1,
         msg = glue::glue(
             "!!! WARNING:
-            Column names in all partitions are not the same: {unique(names_cols)}"
+            Column names in all partitions are not the same: {unique(names_cols)}",
+            " (Error code: rad#2)"
         )
     )
     
@@ -101,7 +103,8 @@ reading_auto_data <- function(
     targets::tar_assert_true(
         unique(check_col_types) == TRUE,
         msg = "!!! WARNING:
-        Column types are not the same across all partitions"
+        Column types are not the same across all partitions",
+        " (Error code: rad#3)"
     )
 
     #--------------------------------------------------
