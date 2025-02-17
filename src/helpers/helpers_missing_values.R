@@ -12,7 +12,8 @@ helpers_missing_values <- function() {
     missings <- list(
         "implausible" = -5,
         "not_specified" = -7,
-        "other" = -9
+        "other" = -9,
+        "all_missings" = c(-5, -7, -9)
     )
 
     #--------------------------------------------------
