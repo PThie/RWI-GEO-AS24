@@ -39,7 +39,8 @@ cleaning_variable_names <- function(
             num_doors = numberofdoors
             num_previous_owners = previousowners,
             state_id = stateid,
-            vat_deductible = vatdeductible
+            vat_deductible = vatdeductible,
+            zipcode = zip
         )
 
     #--------------------------------------------------
