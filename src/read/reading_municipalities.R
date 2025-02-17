@@ -19,7 +19,19 @@ reading_municipalities <- function(year_of_definition = NA) {
             year_of_definition,
             "VG250_GEM.shp"
         )
-    )
+    ) |>
+        sf::st_transform(config_globals()[["utmcrs"]]) |>
+        dplyr::select(
+            ags = AGS,
+            name = GEN,
+            geometry
+        ) |>
+        dplyr::mutate(
+            name = stringi::stri_trans_general(
+                name,
+                "de-ASCII; Latin-ASCII"
+            )
+        )
 
     #--------------------------------------------------
     # return
