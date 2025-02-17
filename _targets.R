@@ -122,6 +122,18 @@ targets_preparation_folders <- rlang::list2(
 )
 
 #--------------------------------------------------
+# Geo data
+
+targets_geo_data <- rlang::list2(
+    tar_qs(
+        municipalities,
+        reading_municipalities(
+            year_of_definition = 2023
+        )
+    )
+)
+
+#--------------------------------------------------
 # Preparation AS data
 
 targets_preparation_auto_data <- rlang::list2(
