@@ -18,7 +18,9 @@ helpers_deleted_variables <- function() {
         "day", # because part of partition_date
         "fornewmarket", # because should be always 0 since our data is only used cars
         "currencyid", # because all prices are in Euros
-        "visibilitytypeid" # internal variable for AutoScout
+        "visibilitytypeid", # internal variable for AutoScout
+        "offertypeid", # because only contains U = used as we only get used cars from AS24
+        "partition_date" # because only needed for AS24 to see when the data was selected for delivery
     )
 
     #--------------------------------------------------
