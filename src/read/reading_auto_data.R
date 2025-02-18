@@ -102,9 +102,11 @@ reading_auto_data <- function(
 
     targets::tar_assert_true(
         unique(check_col_types) == TRUE,
-        msg = "!!! WARNING:
-        Column types are not the same across all partitions",
-        " (Error code: rad#3)"
+        msg = glue::glue(
+            "!!! WARNING:
+            Column types are not the same across all partitions",
+            " (Error code: rad#3)"
+        )
     )
 
     #--------------------------------------------------
