@@ -30,7 +30,7 @@ cleaning_variable_names <- function(
             efficiency_class = efficiencyclassid,
             emission_class = emissionpollutionclassid,
             emission_sticker = emissionstickerid,
-            equipment_first = equipmentfirst,
+            equipment_first = equipmentidfirst,
             fuel_consumption_city = fuelconsumptioncity,
             fuel_consumption_rural = fuelconsumptioncountry,
             fuel_consumption_mixed = fuelconsumptionmixed,
