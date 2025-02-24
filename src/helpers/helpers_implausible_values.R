@@ -21,7 +21,7 @@ helpers_implausible_values <- function() {
     # combine all
 
     implausible_values <- list(
-        "implausible_price" = implausible_price
+        "implausible_city" = implausible_city
     )
 
     #--------------------------------------------------
