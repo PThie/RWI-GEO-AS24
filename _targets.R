@@ -24,6 +24,8 @@ suppressPackageStartupMessages({
     library(data.table)
     library(glue)
     library(purrr)
+    library(kableExtra)
+    library(qs)
 })
 
 #----------------------------------------------
@@ -137,6 +139,8 @@ targets_geo_data <- rlang::list2(
 # Preparation AS data
 
 targets_preparation_auto_data <- rlang::list2(
+    #--------------------------------------------------
+    # Reading raw data
 	tar_file_read(
 		auto_data_raw,
 		file.path(
@@ -146,10 +150,17 @@ targets_preparation_auto_data <- rlang::list2(
         ),
 		reading_auto_data(!!.x)
 	),
+    tar_target(
+        mapping_tables,
+        reading_mapping_tables()
+    ),
+    #--------------------------------------------------
+    # Cleaning steps
     tar_fst(
         auto_data_cleaned,
         cleaning_auto_data(
-            auto_data_raw = auto_data_raw
+            auto_data_raw = auto_data_raw,
+            municipalities = municipalities
         )
     ),
     tar_fst(
@@ -175,6 +186,7 @@ targets_pipeline_stats <- rlang::list2(
 # combine all
 
 rlang::list2(
+    targets_geo_data,
 	targets_preparation_folders,
 	targets_pipeline_stats,
     targets_preparation_auto_data
