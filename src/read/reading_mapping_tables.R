@@ -73,6 +73,15 @@ reading_mapping_tables <- function() {
                     mapping_value = non_id_name
                 )
 
+            # replace special characters
+            dta <- dta |>
+                dplyr::mutate(
+                    mapping_value = stringi::stri_trans_general(
+                        mapping_value,
+                        "de-ASCII; Latin-ASCII"
+                    )
+                )
+
             # store
             mapping_tables_list[[name]] <- dta
         }
