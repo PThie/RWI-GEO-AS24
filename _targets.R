@@ -164,6 +164,13 @@ targets_preparation_auto_data <- rlang::list2(
         )
     ),
     tar_fst(
+        auto_data_mapped,
+        mapping_id_variables(
+            auto_data = auto_data_cleaned,
+            mapping_tables = mapping_tables
+        )
+    ),
+    tar_fst(
         auto_data_renamed,
         cleaning_variable_names(
             auto_data = auto_data_cleaned
