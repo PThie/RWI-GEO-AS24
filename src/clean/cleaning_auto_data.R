@@ -276,6 +276,14 @@ cleaning_auto_data <- function (
             ),
             transmissionid = as.numeric(transmissionid),
             #--------------------------------------------------
+            # customer type ID
+            # Encode customer type ID = C because this is not part of our
+            # data delivery (see AS response in AS log entry 03022025-01 on GitHub)
+            customertypeid = dplyr::case_when(
+                customertypeid == "C" ~ as.character(helpers_missing_values()[["other"]]),
+                TRUE ~ customertypeid
+            ),
+            #--------------------------------------------------
             # zip-code
             zip = as.character(zip),
             zip = dplyr::case_when(
