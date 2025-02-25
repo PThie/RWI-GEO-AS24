@@ -82,6 +82,28 @@ reading_mapping_tables <- function() {
                     )
                 )
 
+            # fix that "private" is labeled "privat" in customertypeid
+            if (name == "customertype") {
+                dta <- dta |>
+                    dplyr::mutate(
+                        mapping_value = dplyr::case_when(
+                            mapping_value == "Privat" ~ "Private",
+                            TRUE ~ mapping_value
+                        )
+                    )
+            }
+
+            # NOTE: some of the variables have different names in the dataset
+            if (name == "customertype") {
+                name <- "customertypeid"
+            } else if (name == "efficiencyclass") {
+                name <- "efficiencyclassid"
+            } else if (name == "emissionclassid") {
+                name <- "emissionpollutionclassid"
+            } else if (name == "equipmentid") {
+                name <- "equipmentidfirst"
+            }
+            
             # store
             mapping_tables_list[[name]] <- dta
         }
