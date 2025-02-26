@@ -136,6 +136,18 @@ cleaning_auto_data <- function (
             )
         }
 
+        # for stateid: check if always 'A'
+        if (col == "stateid") {
+            targets::tar_assert_true(
+                unique(auto_data_prep[[col]]) == "A",
+                msg = glue::glue(
+                    "!!! WARNING: ",
+                    "The unique value for {col} is not as expected.",
+                    " (Error code: cad#6)"
+                )
+            )
+        }
+
         # remove column
         if (col %in% names(auto_data_prep)) {
             auto_data_prep[[col]] <- NULL
@@ -328,7 +340,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The zip codes do not have the expected length of 5 digits.",
-            " (Error code: cad#6)"
+            " (Error code: cad#7)"
         )
     )
 
@@ -342,7 +354,7 @@ cleaning_auto_data <- function (
             "!!! WARNING: ",
             "The transmissionid contains values other than 'A', 'M', or 'S'. ",
             "Adjust recoding.",
-            " (Error code: cad#7)"
+            " (Error code: cad#8)"
         )
     )
     
@@ -413,7 +425,7 @@ cleaning_auto_data <- function (
             msg = glue::glue(
                 "!!! WARNING: ",
                 "The {var} dates do not have the expected length of 10 characters.",
-                " (Error code: cad#8)"
+                " (Error code: cad#9)"
             )
         )
 
@@ -423,7 +435,7 @@ cleaning_auto_data <- function (
             msg = glue::glue(
                 "!!! WARNING: ",
                 "The {var} dates do include letters",
-                " (Error code: cad#9)"
+                " (Error code: cad#10)"
             )
         )
     }
@@ -491,7 +503,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The city names include numbers.",
-            " (Error code: cad#10)"
+            " (Error code: cad#11)"
         )
     )
 
@@ -508,7 +520,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The country zip codes do not have the expected length of 4 digits.",
-            " (Error code: cad#11)"
+            " (Error code: cad#12)"
         )
     )
 
@@ -523,7 +535,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The country zip codes do not match the country code.",
-            " (Error code: cad#12)"
+            " (Error code: cad#13)"
         )
     )
 
@@ -538,7 +550,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The country codes do not match the expected values.",
-            " (Error code: cad#13)"
+            " (Error code: cad#14)"
         )
     )
 
