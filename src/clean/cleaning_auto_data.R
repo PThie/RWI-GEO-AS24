@@ -528,6 +528,21 @@ cleaning_auto_data <- function (
     )
 
     #--------------------------------------------------
+    # test for country code
+
+    targets::tar_assert_true(
+        all(
+            unique(auto_data_prep$countrycode) %in%
+                config_globals()[["possible_country_codes"]]
+        ),
+        msg = glue::glue(
+            "!!! WARNING: ",
+            "The country codes do not match the expected values.",
+            " (Error code: cad#13)"
+        )
+    )
+
+    #--------------------------------------------------
     # TODO:
     # calculate the number of missings (after cleaning)
     # by missing type
