@@ -20,45 +20,11 @@ exporting_column_infos <- function(
         #--------------------------------------------------
         # extract column types and names
 
-        coltypes <- sapply(auto_data, class) |>
-            unlist() |>
-            as.data.frame() |>
-            dplyr::rename(columns_types = 1)
-
-        coltypes$columns <- rownames(coltypes)
-        rownames(coltypes) <- NULL
+        coltypes <- helpers_extracting_column_info(auto_data)
 
         #--------------------------------------------------
-        # handle date columns
-
-        date_columns <- c(
-            "firstregistration",
-            "createddate",
-            "partition_date"
-        )
-
-        # test that columns are actually in the dataset
-        for (col in date_columns) {
-            targets::tar_assert_true(
-                col %in% colnames(auto_data),
-                msg = glue::glue(
-                    "{col} not in the dataset.",
-                    " (Error code: cvn#1)"
-                )
-            )
-        }
-
-        coltypes <- coltypes |>
-            dplyr::relocate(columns) |>
-            # handle that dates have two types
-            dplyr::filter(
-                !columns %in% paste0(date_columns, "2")
-            ) |>
-            dplyr::mutate(
-                columns = stringr::str_replace(columns, "[0-9]", "")
-            )
-
         # export
+
         openxlsx::write.xlsx(
             coltypes,
             file.path(
@@ -69,7 +35,9 @@ exporting_column_infos <- function(
             )
         )
 
+        #--------------------------------------------------
         # return
+
         return(coltypes)
     }
 }
