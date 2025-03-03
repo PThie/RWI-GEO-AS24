@@ -26,6 +26,7 @@ suppressPackageStartupMessages({
     library(purrr)
     library(kableExtra)
     library(qs)
+    library(cli)
 })
 
 #----------------------------------------------
@@ -155,11 +156,18 @@ targets_preparation_auto_data <- rlang::list2(
         reading_mapping_tables()
     ),
     #--------------------------------------------------
-    # Column type info
+    # Column type info and test
     tar_fst(
         column_types_benchmark,
         exporting_column_infos(
             auto_data = auto_data_raw
+        )
+    ),
+    tar_target(
+        column_types_test,
+        testing_consistent_variables(
+            auto_data = auto_data_raw,
+            column_types_benchmark = column_types_benchmark
         )
     ),
     #--------------------------------------------------
