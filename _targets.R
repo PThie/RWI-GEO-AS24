@@ -155,6 +155,14 @@ targets_preparation_auto_data <- rlang::list2(
         reading_mapping_tables()
     ),
     #--------------------------------------------------
+    # Column type info
+    tar_fst(
+        column_types_benchmark,
+        exporting_column_infos(
+            auto_data = auto_data_raw
+        )
+    ),
+    #--------------------------------------------------
     # Cleaning steps
     tar_fst(
         auto_data_cleaned,
@@ -173,10 +181,16 @@ targets_preparation_auto_data <- rlang::list2(
     tar_fst(
         auto_data_renamed,
         cleaning_variable_names(
-            auto_data = auto_data_cleaned
+            auto_data = auto_data_mapped
         )
     )
 )
+
+#--------------------------------------------------
+# Export
+
+#--------------------------------------------------
+# Unit testing
 
 #--------------------------------------------------
 # Pipeline stats
