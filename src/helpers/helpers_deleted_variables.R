@@ -21,7 +21,7 @@ helpers_deleted_variables <- function() {
         "visibilitytypeid", # internal variable for AutoScout
         "offertypeid", # because only contains U = used as we only get used cars from AS24
         "partition_date", # because only needed for AS24 to see when the data was selected for delivery
-        "stateid" # because only contains 'A'
+        "stateid" # because only contains 'A' (active). We only get active listings from AS24
     )
 
     #--------------------------------------------------
