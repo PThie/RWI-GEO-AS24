@@ -238,7 +238,7 @@ cleaning_auto_data <- function (
         kableExtra::save_kable(
             file.path(
                 config_paths()[["output_path"]],
-                config_globals()[["next_version"],
+                config_globals()[["next_version"]],
                 "info",
                 "thresholds_censoring.tex"
             ),
