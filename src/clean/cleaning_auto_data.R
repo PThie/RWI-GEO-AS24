@@ -202,6 +202,7 @@ cleaning_auto_data <- function (
         all_thresholds,
         file.path(
             config_paths()[["output_path"]],
+            config_globals()[["next_version"]],
             "info",
             "thresholds_censoring.xlsx"
         ),
@@ -237,6 +238,7 @@ cleaning_auto_data <- function (
         kableExtra::save_kable(
             file.path(
                 config_paths()[["output_path"]],
+                config_globals()[["next_version"],
                 "info",
                 "thresholds_censoring.tex"
             ),
@@ -400,6 +402,7 @@ cleaning_auto_data <- function (
         implausible_values_df,
         file.path(
             config_paths()[["output_path"]],
+            config_globals()[["next_version"]],
             "info",
             "implausible_values_shares.xlsx"
         ),

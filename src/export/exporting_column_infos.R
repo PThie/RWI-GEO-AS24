@@ -29,7 +29,7 @@ exporting_column_infos <- function(
             coltypes,
             file.path(
                 config_paths()[["output_path"]],
-                config_globals()[["current_version"]],
+                config_globals()[["next_version"]],
                 "info",
                 "column_types.xlsx"
             )

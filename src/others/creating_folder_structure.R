@@ -13,6 +13,7 @@ creating_folder_structure <- function() {
     if (!dir.exists(config_paths()[["output_path"]])) {
         dir.create(
             config_paths()[["output_path"]],
+            config_globals()[["next_version"]],
             recursive = TRUE
         )
     }
@@ -23,6 +24,7 @@ creating_folder_structure <- function() {
     for (folder in config_globals()[["output_folders"]]) {
         directory <- file.path(
             config_paths()[["output_path"]],
+            config_globals()[["next_version"]],
             folder
         )
 
