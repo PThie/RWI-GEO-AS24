@@ -20,7 +20,7 @@ exporting_auto_data <- function(
 
     for (file_format in config_globals()[["exported_file_formats"]]) {
         if (file_format == "csv") {
-            write.csv(
+            data.table::fwrite(
                 auto_data,
                 file.path(
                     config_paths()[["data_path"]],
@@ -29,7 +29,8 @@ exporting_auto_data <- function(
                     file_format,
                     paste0(suf_name, ".csv")
                 ),
-                row.names = FALSE
+                row.names = FALSE,
+                sep = ";"
             )
         } else {
             arrow::write_parquet(
