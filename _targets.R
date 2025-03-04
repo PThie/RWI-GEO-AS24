@@ -186,6 +186,12 @@ targets_preparation_auto_data <- rlang::list2(
             mapping_tables = mapping_tables
         )
     ),
+    tar_target(
+        value_labels,
+        exporting_value_labels(
+            auto_data = auto_data_mapped
+        )
+    ),
     tar_fst(
         auto_data_renamed,
         cleaning_variable_names(
