@@ -197,6 +197,15 @@ targets_preparation_auto_data <- rlang::list2(
 #--------------------------------------------------
 # Export
 
+targets_export <- rlang::list2(
+    tar_fst(
+        auto_data_exported,
+        exporting_auto_data(
+            auto_data = auto_data_renamed
+        )
+    )
+)
+
 #--------------------------------------------------
 # Unit testing
 
@@ -217,6 +226,7 @@ targets_pipeline_stats <- rlang::list2(
 rlang::list2(
     targets_geo_data,
 	targets_preparation_folders,
-	targets_pipeline_stats,
-    targets_preparation_auto_data
+    targets_preparation_auto_data,
+    targets_export,
+    targets_pipeline_stats
 )
