@@ -74,6 +74,22 @@ creating_folder_structure <- function() {
     }
 
     #--------------------------------------------------
+    # create folders for exported data
+
+    for (file_format in config_globals()[["exported_file_formats"]]) {
+        directory <- file.path(
+            config_paths()[["output_path"]],
+            "SUF",
+            config_globals()[["next_version"]],
+            file_format
+        )
+
+        if (!dir.exists(directory)) {
+            dir.create(directory, recursive = TRUE)
+        }
+    }
+
+    #--------------------------------------------------
     # return
 
     return(NULL)
