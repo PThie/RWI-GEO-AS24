@@ -78,7 +78,7 @@ creating_folder_structure <- function() {
 
     for (file_format in config_globals()[["exported_file_formats"]]) {
         directory <- file.path(
-            config_paths()[["output_path"]],
+            config_paths()[["data_path"]],
             "SUF",
             config_globals()[["next_version"]],
             file_format
