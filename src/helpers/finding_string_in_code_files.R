@@ -13,6 +13,7 @@ finding_string_in_code_files <- function(
 
     #--------------------------------------------------
     # list all coding files
+    
     folders <- c("clean", "export", "helpers", "others", "read", "test")
 
     files <- c()
