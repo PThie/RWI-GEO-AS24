@@ -213,7 +213,50 @@ targets_export <- rlang::list2(
 )
 
 #--------------------------------------------------
-# Unit testing
+# Unit test
+
+targets_unit_testing <- rlang::list2(
+    tar_eval(
+        list(
+            #--------------------------------------------------
+            # Reading the exported SUF data
+            tar_file_read(
+                suf_exported_data,
+                file.path(
+                    config_paths()[["data_path"]],
+                    "SUF",
+                    config_globals()[["next_version"]],
+                    exported_file_formats,
+                    paste0(
+                        "CARMKT_",
+                        config_globals()[["next_version"]],
+                        "_SUF.",
+                        exported_file_formats
+                    )
+                ),
+                reading_exported_data(
+                    data_path = !!.x,
+                    file_format = exported_file_formats
+                )
+            ),
+            #--------------------------------------------------
+            # Test whether all variables have been deleted that are supposed to
+            # be deleted
+            tar_target(
+                deleted_variables_test,
+                testing_deleted_variables(
+                    auto_data = suf_exported_data,
+                    file_format = exported_file_formats
+                )
+            )
+        ),
+        values = list(
+            suf_exported_data = rlang::syms(helpers_target_names()[["suf_exported_data"]]),
+            exported_file_formats = helpers_target_names()[["exported_file_formats"]],
+            deleted_variables_test = rlang::syms(helpers_target_names()[["deleted_variables_test"]])
+        )
+    )
+)
 
 #--------------------------------------------------
 # Pipeline stats
@@ -234,5 +277,6 @@ rlang::list2(
 	targets_preparation_folders,
     targets_preparation_auto_data,
     targets_export,
+    targets_unit_testing,
     targets_pipeline_stats
 )
