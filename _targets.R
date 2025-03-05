@@ -213,6 +213,18 @@ targets_export <- rlang::list2(
 )
 
 #--------------------------------------------------
+# Infos for reporting
+
+targets_infos <- rlang::list2(
+    tar_fst(
+        dataset_infos,
+        exporting_dataset_info(
+            auto_data = auto_data_renamed
+        )
+    )
+)
+
+#--------------------------------------------------
 # Unit test
 
 targets_unit_testing <- rlang::list2(
@@ -277,6 +289,7 @@ rlang::list2(
 	targets_preparation_folders,
     targets_preparation_auto_data,
     targets_export,
+    targets_infos,
     targets_unit_testing,
     targets_pipeline_stats
 )
