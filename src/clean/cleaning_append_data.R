@@ -29,7 +29,7 @@ cleaning_append_data <- function(
 
     auto_data_prep <- auto_data_prep |>
         dplyr::mutate(
-            version = config_globals()[["next_version"]]
+            carmkt_version = config_globals()[["next_version"]]
         )
 
     #--------------------------------------------------
