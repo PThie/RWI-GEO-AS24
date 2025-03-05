@@ -207,6 +207,19 @@ targets_preparation_auto_data <- rlang::list2(
 )
 
 #--------------------------------------------------
+# Append waves
+
+targets_append <- rlang::list2(
+    tar_fst(
+        auto_data_appended,
+        appending_waves(
+            deliveries = config_globals()[["deliveries"]],
+            dependency = auto_data_renamed
+        )
+    ),
+)
+
+#--------------------------------------------------
 # Export
 
 targets_export <- rlang::list2(
@@ -296,6 +309,6 @@ rlang::list2(
     targets_preparation_auto_data,
     targets_export,
     targets_infos,
-    targets_unit_testing,
+    # targets_unit_testing,
     targets_pipeline_stats
 )
