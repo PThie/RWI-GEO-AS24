@@ -156,6 +156,14 @@ targets_preparation_auto_data <- rlang::list2(
         reading_mapping_tables()
     ),
     #--------------------------------------------------
+    # Info on time horizon of delivery
+    tar_fst(
+        time_horizon_delivery,
+        exporting_time_horizon(
+            auto_data = auto_data_raw
+        )
+    ),
+    #--------------------------------------------------
     # Column type info and test
     tar_fst(
         column_types_benchmark,
