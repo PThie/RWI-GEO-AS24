@@ -197,6 +197,12 @@ targets_preparation_auto_data <- rlang::list2(
         cleaning_variable_names(
             auto_data = auto_data_mapped
         )
+    ),
+    tar_fst(
+        cleaned_data_exported,
+        exporting_cleaned_data(
+            auto_data = auto_data_renamed
+        )
     )
 )
 
