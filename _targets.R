@@ -217,6 +217,12 @@ targets_append <- rlang::list2(
             dependency = auto_data_renamed
         )
     ),
+    tar_fst(
+        auto_data_cleaned_appended,
+        cleaning_append_data(
+            auto_data = auto_data_appended
+        )
+    )
 )
 
 #--------------------------------------------------
@@ -307,6 +313,7 @@ rlang::list2(
     targets_geo_data,
 	targets_preparation_folders,
     targets_preparation_auto_data,
+    targets_append,
     targets_export,
     targets_infos,
     # targets_unit_testing,
