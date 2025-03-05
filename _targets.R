@@ -232,7 +232,7 @@ targets_export <- rlang::list2(
     tar_fst(
         auto_data_exported,
         exporting_auto_data(
-            auto_data = auto_data_renamed
+            auto_data = auto_data_cleaned_appended
         )
     )
 )
@@ -244,7 +244,7 @@ targets_infos <- rlang::list2(
     tar_fst(
         dataset_infos,
         exporting_dataset_info(
-            auto_data = auto_data_renamed
+            auto_data = auto_data_cleaned_appended
         )
     )
 )
@@ -316,6 +316,6 @@ rlang::list2(
     targets_append,
     targets_export,
     targets_infos,
-    # targets_unit_testing,
+    targets_unit_testing,
     targets_pipeline_stats
 )
