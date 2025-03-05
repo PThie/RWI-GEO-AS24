@@ -28,12 +28,12 @@ exporting_time_horizon <- function(
     }
 
     # create information with time horizon
-    date_info <- as.data.frame(
+    data_info <- as.data.frame(
         cbind(
             `Date labels` = c("Start date:", "End date:"),
             Dates = c(
-                as.character(min(dta_prep$partition_date)),
-                as.character(max(dta_prep$partition_date))
+                as.character(min(auto_data$partition_date)),
+                as.character(max(auto_data$partition_date))
             )
         )
     )
@@ -56,7 +56,7 @@ exporting_time_horizon <- function(
 
     # export dates
     gdata::write.fwf(
-        date_info,
+        data_info,
         directory,
         append = TRUE,
         rownames = FALSE,
