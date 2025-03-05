@@ -558,6 +558,18 @@ cleaning_auto_data <- function (
     )
 
     #--------------------------------------------------
+    # add version and delivery of the data
+
+    auto_data_prep <- auto_data_prep |>
+        dplyr::mutate(
+            delivery = stringr::str_replace_all(
+                config_globals()[["current_delivery"]],
+                "_",
+                "-"
+            )
+        )
+
+    #--------------------------------------------------
     # TODO:
     # calculate the number of missings (after cleaning)
     # by missing type
