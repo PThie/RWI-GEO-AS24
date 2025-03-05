@@ -14,8 +14,10 @@ finding_string_in_code_files <- function(
     #--------------------------------------------------
     # list all coding files
     
-    folders <- c("clean", "export", "helpers", "others", "read", "test")
-
+    folders <- list.files(
+        config_paths()[["code_path"]]
+    )
+    
     files <- c()
     for (folder in folders) {
         file <- list.files(
