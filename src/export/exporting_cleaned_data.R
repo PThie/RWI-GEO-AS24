@@ -20,7 +20,7 @@ exporting_cleaned_data <- function(
         file.path(
             config_paths()[["data_path"]],
             "processed",
-            config_globals()[["current_delivery"]],
+            paste0("Lieferung_", config_globals()[["current_delivery"]]),
             "clean_data.parquet"
         )
     )
