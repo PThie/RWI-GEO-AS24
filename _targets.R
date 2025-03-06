@@ -257,12 +257,12 @@ targets_infos <- rlang::list2(
         ),
 		cue = tar_cue(mode = "always")
     ),
-    # tar_fst(
-    #     variable_labels,
-    #     creating_variable_labels(
-    #         auto_data = auto_data_cleaned_appended
-    #     )
-    # )
+    tar_fst(
+        variable_labels,
+        creating_variable_labels(
+            auto_data = auto_data_cleaned_appended
+        )
+    )
 )
 
 #--------------------------------------------------
