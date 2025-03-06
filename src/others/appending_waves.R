@@ -14,6 +14,18 @@ appending_waves <- function(
     #' @author Patrick Thiel
     
     #--------------------------------------------------
+    # actively call dependency to make sure that this function is executed if
+    # something changes upstream
+
+    targets::tar_assert_nonempty(
+        dependency,
+        msg = glue::glue(
+            "The dependency object is empty.",
+            " (Error code: aw#1)"
+        )
+    )
+
+    #--------------------------------------------------
     # read all data
 
     data_storage <- list()
