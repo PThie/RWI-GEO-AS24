@@ -1,4 +1,4 @@
-#----------------------------------------------
+#--------------------------------------------------
 # description
 
 # This file is the main file that orchestrates the other coding files. It
@@ -8,7 +8,7 @@
 # PIPELINE SETTINGS
 ###################################################
 
-#----------------------------------------------
+#--------------------------------------------------
 # load libraries
 
 suppressPackageStartupMessages({
@@ -29,7 +29,7 @@ suppressPackageStartupMessages({
     library(cli)
 })
 
-#----------------------------------------------
+#--------------------------------------------------
 # set working directory
 
 setwd(here::here())
@@ -161,7 +161,8 @@ targets_preparation_auto_data <- rlang::list2(
         time_horizon_delivery,
         exporting_time_horizon(
             auto_data = auto_data_raw
-        )
+        ),
+		cue = tar_cue(mode = "always")
     ),
     #--------------------------------------------------
     # Column type info and test
@@ -222,7 +223,7 @@ targets_append <- rlang::list2(
         auto_data_appended,
         appending_waves(
             deliveries = config_globals()[["deliveries"]],
-            dependency = auto_data_renamed
+            dependency = cleaned_data_exported
         )
     ),
     tar_fst(
@@ -253,8 +254,15 @@ targets_infos <- rlang::list2(
         dataset_infos,
         exporting_dataset_info(
             auto_data = auto_data_cleaned_appended
-        )
-    )
+        ),
+		cue = tar_cue(mode = "always")
+    ),
+    # tar_fst(
+    #     variable_labels,
+    #     creating_variable_labels(
+    #         auto_data = auto_data_cleaned_appended
+    #     )
+    # )
 )
 
 #--------------------------------------------------
@@ -293,12 +301,22 @@ targets_unit_testing <- rlang::list2(
                     auto_data = suf_exported_data,
                     file_format = exported_file_formats
                 )
+            ),
+            #--------------------------------------------------
+            # Test whether there are missings that are not recoded
+            tar_fst(
+                missings_recoding_test,
+                testing_missings_recoding(
+                    auto_data = suf_exported_data,
+                    file_format = exported_file_formats
+                )
             )
         ),
         values = list(
             suf_exported_data = rlang::syms(helpers_target_names()[["suf_exported_data"]]),
             exported_file_formats = helpers_target_names()[["exported_file_formats"]],
-            deleted_variables_test = rlang::syms(helpers_target_names()[["deleted_variables_test"]])
+            deleted_variables_test = rlang::syms(helpers_target_names()[["deleted_variables_test"]]),
+            missings_recoding_test = rlang::syms(helpers_target_names()[["missings_recoding_test"]])
         )
     )
 )
