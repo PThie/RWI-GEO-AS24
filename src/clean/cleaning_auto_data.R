@@ -284,11 +284,11 @@ cleaning_auto_data <- function (
             #--------------------------------------------------
             # transmission ID
             transmissionid = dplyr::case_when(
-                transmissionid == "A" ~ 1,
-                transmissionid == "M" ~ 2,
-                transmissionid == "S" ~ 3
+                transmissionid == "A" ~ "Automatic",
+                transmissionid == "M" ~ "Manual",
+                transmissionid == "S" ~ "Sport",
+                TRUE ~ as.character(helpers_missing_values()[["not_specified"]])
             ),
-            transmissionid = as.numeric(transmissionid),
             #--------------------------------------------------
             # customer type ID
             # Encode customer type ID = C because this is not part of our
