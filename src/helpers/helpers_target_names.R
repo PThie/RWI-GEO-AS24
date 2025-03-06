@@ -22,6 +22,9 @@ helpers_target_names <- function() {
         ),
         "deleted_variables_test" = glue::glue(
             "deleted_variables_test_{exported_file_formats}"
+        ),
+        "missings_recoding_test" = glue::glue(
+            "missings_recoding_test_{exported_file_formats}"
         )
     )
 
