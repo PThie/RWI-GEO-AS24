@@ -9,7 +9,7 @@ exporting_cleaned_data <- function(
     #' 
     #' @param auto_data Dataframe with cleaned auto data
     #' 
-    #' @return NULL, direct export to local directory
+    #' @return Dataframe with exported data
     #' @author Patrick Thiel
 
     #--------------------------------------------------
@@ -28,5 +28,5 @@ exporting_cleaned_data <- function(
     #--------------------------------------------------
     # return
 
-    return(NULL)
+    return(auto_data)
 }
