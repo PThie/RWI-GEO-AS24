@@ -286,7 +286,7 @@ cleaning_auto_data <- function (
             transmissionid = dplyr::case_when(
                 transmissionid == "A" ~ "Automatic",
                 transmissionid == "M" ~ "Manual",
-                transmissionid == "S" ~ "Sport",
+                transmissionid == "S" ~ "Semi-automatic",
                 TRUE ~ as.character(helpers_missing_values()[["not_specified"]])
             ),
             #--------------------------------------------------
