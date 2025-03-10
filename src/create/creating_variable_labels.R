@@ -170,7 +170,7 @@ creating_variable_labels <- function(
                         "price",
                         "mileage",
                         "power",
-                        "co2_missions",
+                        "co2_emissions",
                         "cylinders",
                         "displacement",
                         "fuel_consumption_city",
@@ -215,7 +215,7 @@ creating_variable_labels <- function(
 
         # Check that no variable was not labeled
         targets::tar_assert_true(
-            length(which(is.na(label_data[["variable type"]]))) == 0,
+            length(which(is.na(label_data[["variable_type"]]))) == 0,
             msg = glue::glue(
                 "!!! WARNING: ",
                 "Some variables were not assigned.",
