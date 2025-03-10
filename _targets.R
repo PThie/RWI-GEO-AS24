@@ -289,7 +289,8 @@ targets_unit_testing <- rlang::list2(
                 ),
                 reading_exported_data(
                     data_path = !!.x,
-                    file_format = exported_file_formats
+                    file_format = exported_file_formats,
+                    dependency = auto_data_cleaned_appended
                 )
             ),
             #--------------------------------------------------
