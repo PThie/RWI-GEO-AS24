@@ -212,6 +212,14 @@ targets_preparation_auto_data <- rlang::list2(
         exporting_cleaned_data(
             auto_data = auto_data_renamed
         )
+    ),
+    #--------------------------------------------------
+    # Info on missings
+    tar_fst(
+        number_of_missings,
+        calculating_number_missings(
+            auto_data = auto_data_renamed
+        ),
     )
 )
 
