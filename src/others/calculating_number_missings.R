@@ -21,7 +21,7 @@ calculating_number_missings <- function(
             missing_count <- c(
                 missing_count,
                 length(which(
-                    auto_data_prep[[var]] == missing
+                    auto_data[[var]] == missing
                 ))
             )
         }
@@ -31,7 +31,7 @@ calculating_number_missings <- function(
             variable = var,
             missing_type = names(helpers_missing_values()),
             missing_count = missing_count,
-            missing_perc = missing_count / nrow(auto_data_prep) * 100
+            missing_perc = missing_count / nrow(auto_data) * 100
         ) |>
         # drop all missings (because this is a vector, it will be not be calculated
         # correctly)
