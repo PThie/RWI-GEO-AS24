@@ -570,13 +570,6 @@ cleaning_auto_data <- function (
         )
 
     #--------------------------------------------------
-    # TODO:
-    # calculate the number of missings (after cleaning)
-    # by missing type
-    
-    # TEST for too many missings? How to define too many missings?
-
-    #--------------------------------------------------
     # return
 
     return(auto_data_prep)
