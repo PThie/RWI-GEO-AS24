@@ -12,8 +12,9 @@ reading_mapping_tables <- function() {
     # constant across all deliveries (and there are no new mapping tables for
     # other deliveries).
 
-    mapping_tables_list <- list()
     if (config_globals()[["current_delivery"]] == "Nov_2024") {
+        mapping_tables_list <- list()
+
         # list all mapping tables
         mapping_tables_files <- list.files(
             file.path(
@@ -107,7 +108,43 @@ reading_mapping_tables <- function() {
             # store
             mapping_tables_list[[name]] <- dta
         }
+
+        # export list for further use
+        # NOTE: version is hard coded because the version in globals changes
+        saveRDS(
+            mapping_tables_list,
+            file.path(
+                config_paths()[["output_path"]],
+                "v1",
+                "info",
+                "mapping_tables_list.rds"
+            )
+        )
+    } else {
+        #--------------------------------------------------
+        # read mapping tables from benchmark
+
+        mapping_tables_list <- readRDS(
+            file.path(
+                config_paths()[["output_path"]],
+                "v1",
+                "info",
+                "mapping_tables_list.rds"
+            )
+        )
     }
+
+    #--------------------------------------------------
+    # test that output list is not empty
+
+    targets::tar_assert_nonempty(
+        mapping_tables_list,
+        msg = glue::glue(
+            "!!! WARNING:",
+            " Mapping tables list is empty.",
+            " (Error code: rmt#1)"
+        )
+    )
 
     #--------------------------------------------------
     # return
