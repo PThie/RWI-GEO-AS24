@@ -247,6 +247,18 @@ reading_auto_data <- function(
     )
 
     #--------------------------------------------------
+    # check that dataframe is not empty
+
+    targets::tar_assert_nonempty(
+        dta_prep,
+        msg = glue::glue(
+            "!!! WARNING:",
+            " Combined dataset is empty.",
+            " (Error code: rad#4)"
+        )
+    )
+
+    #--------------------------------------------------
     # return
 
     return(dta_prep)

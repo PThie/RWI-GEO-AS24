@@ -64,6 +64,18 @@ exporting_time_horizon <- function(
     )
 
     #--------------------------------------------------
+    # test that dataset is not empty
+
+    targets::tar_assert_nonempty(
+        data_info,
+        msg = glue::glue(
+            "!!! WARNING:",
+            " Dataset is empty.",
+            " (Error code: eth#1)"
+        )
+    )
+
+    #--------------------------------------------------
     # return
 
     return(data_info)
