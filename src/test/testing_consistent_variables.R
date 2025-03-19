@@ -77,7 +77,7 @@ testing_consistent_variables <- function(
     # test for consistent variables names
     targets::tar_assert_true(
         all(
-            fix_columns %in% config_fixed_variables()[["fixed_names_vars"]]
+            fix_columns %in% config_fixed_variables_consistency()[["fixed_names_vars"]]
         ),
         msg = glue::glue(
             "!!! WARNING: ",
@@ -89,7 +89,7 @@ testing_consistent_variables <- function(
     # test for consistent variable types
     targets::tar_assert_true(
         all(
-            fix_types %in% config_fixed_variables()[["fixed_types_vars"]]
+            fix_types %in% config_fixed_variables_consistency()[["fixed_types_vars"]]
         ),
         msg = glue::glue(
             "!!! WARNING: ",
