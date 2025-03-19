@@ -1,5 +1,5 @@
 cleaning_auto_data <- function (
-    auto_data_raw = NA,
+    auto_data = NA,
     municipalities = NA
 ) {
     #' @title Clean AutoScout24 data
@@ -15,13 +15,20 @@ cleaning_auto_data <- function (
     #--------------------------------------------------
     # convert dates to characters
 
-    auto_data_prep <- auto_data_raw |>
+    auto_data_prep <- auto_data |>
         dplyr::mutate(
             dplyr::across(
                 .cols = c("firstregistration", "createddate"),
                 ~ as.character(.x)
             )
         )
+
+    #--------------------------------------------------
+    # adjust type of zip code
+
+    if (typeof(auto_data_prep$zip) != "character") {
+        auto_data_prep$zip <- as.character(auto_data_prep$zip)
+    }
 
     #--------------------------------------------------
     # handle logical variables
@@ -153,6 +160,9 @@ cleaning_auto_data <- function (
             auto_data_prep[[col]] <- NULL
         }
     }
+
+    #--------------------------------------------------
+    # merge countrycode and country_id and fix differences
 
     #--------------------------------------------------
     # calculate thresholds for censoring
@@ -299,7 +309,6 @@ cleaning_auto_data <- function (
             ),
             #--------------------------------------------------
             # zip-code
-            zip = as.character(zip),
             zip = dplyr::case_when(
                 # censor implausible values (values too short)
                 nchar(zip) < 4 ~ as.character(
