@@ -27,32 +27,14 @@ suppressPackageStartupMessages({
     library(kableExtra)
     library(qs)
     library(cli)
+    library(purrr)
+    library(autometric)
 })
 
 #--------------------------------------------------
 # set working directory
 
 setwd(here::here())
-
-#--------------------------------------------------
-# Pipeline settings
-
-# target options
-tar_option_set(
-    resources = tar_resources(
-        fst = tar_resources_fst(compress = 50)
-    ),
-    seed = 1,
-    garbage_collection = TRUE,
-    memory = "transient",
-    controller = crew_controller_local(
-        name = "my_controller",
-        workers = 3,
-        seconds_idle = 10
-    ),
-    retrieval = "worker",
-    storage = "worker"
-)
 
 #----------------------------------------------
 # load configurations
@@ -64,6 +46,36 @@ source(
         "helpers",
         "config.R"
     )
+)
+
+#--------------------------------------------------
+# Pipeline settings
+
+# target options
+controller <- crew_controller_local(
+    name = "worker",
+    workers = 3,
+    seconds_idle = 10,
+    options_metrics = crew_options_metrics(
+        path = file.path(
+            config_paths()[["logs_path"]],
+            "worker_metrics",
+            "worker_metrics_history"
+        ),
+        seconds_interval = 1
+    )
+)
+
+tar_option_set(
+    resources = tar_resources(
+        fst = tar_resources_fst(compress = 50)
+    ),
+    seed = 1,
+    garbage_collection = TRUE,
+    memory = "transient",
+    controller = controller,
+    retrieval = "worker",
+    storage = "worker"
 )
 
 #----------------------------------------------
@@ -177,50 +189,51 @@ targets_preparation_auto_data <- rlang::list2(
         testing_consistent_variables(
             auto_data = auto_data_raw,
             column_types_benchmark = column_types_benchmark
-        )
+        ),
+        deployment = "main"
     ),
     #--------------------------------------------------
     # Cleaning steps
-    tar_fst(
-        auto_data_cleaned,
-        cleaning_auto_data(
-            auto_data_raw = auto_data_raw,
-            municipalities = municipalities
-        )
-    ),
-    tar_fst(
-        auto_data_mapped,
-        mapping_id_variables(
-            auto_data = auto_data_cleaned,
-            mapping_tables = mapping_tables
-        )
-    ),
-    tar_target(
-        value_labels,
-        exporting_value_labels(
-            auto_data = auto_data_mapped
-        )
-    ),
-    tar_fst(
-        auto_data_renamed,
-        cleaning_variable_names(
-            auto_data = auto_data_mapped
-        )
-    ),
-    tar_fst(
-        cleaned_data_exported,
-        exporting_cleaned_data(
-            auto_data = auto_data_renamed
-        )
-    ),
+    # tar_fst(
+    #     auto_data_cleaned,
+    #     cleaning_auto_data(
+    #         auto_data = auto_data_raw,
+    #         municipalities = municipalities
+    #     )
+    # ),
+    # tar_fst(
+    #     auto_data_mapped,
+    #     mapping_id_variables(
+    #         auto_data = auto_data_cleaned,
+    #         mapping_tables = mapping_tables
+    #     )
+    # ),
+    # tar_target(
+    #     value_labels,
+    #     exporting_value_labels(
+    #         auto_data = auto_data_mapped
+    #     )
+    # ),
+    # tar_fst(
+    #     auto_data_renamed,
+    #     cleaning_variable_names(
+    #         auto_data = auto_data_mapped
+    #     )
+    # ),
+    # tar_fst(
+    #     cleaned_data_exported,
+    #     exporting_cleaned_data(
+    #         auto_data = auto_data_renamed
+    #     )
+    # ),
     #--------------------------------------------------
     # Info on missings
-    tar_fst(
-        number_of_missings,
-        calculating_number_missings(
-            auto_data = auto_data_renamed
-        ),
-    )
+    # tar_fst(
+    #     number_of_missings,
+    #     calculating_number_missings(
+    #         auto_data = auto_data_renamed
+    #     )
+    # )
 )
 
 #--------------------------------------------------
@@ -338,7 +351,12 @@ targets_pipeline_stats <- rlang::list2(
 		pipeline_stats,
 		helpers_monitoring_pipeline(),
 		cue = tar_cue(mode = "always")
-	)
+	),
+    tar_target(
+        worker_stats, 
+        reading_worker_stats(),
+        cue = tar_cue(mode = "always")
+    )
 )
 
 #--------------------------------------------------
@@ -348,9 +366,9 @@ rlang::list2(
     targets_geo_data,
 	targets_preparation_folders,
     targets_preparation_auto_data,
-    targets_append,
-    targets_export,
-    targets_infos,
-    targets_unit_testing,
+    # targets_append,
+    # targets_export,
+    # targets_infos,
+    # targets_unit_testing,
     targets_pipeline_stats
 )
