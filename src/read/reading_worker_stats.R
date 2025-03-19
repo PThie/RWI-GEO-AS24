@@ -42,15 +42,17 @@ reading_worker_stats <- function() {
 
     latest_files <- files |>
         dplyr::group_by(worker) |>
-        dplyr::filter(mtime == max(mtime))
+        dplyr::filter(mtime == max(mtime)) |>
+        dplyr::ungroup() |>
+        as.data.frame()
 
     #--------------------------------------------------
     # read the latest files logs for each worker
 
     controller_stats_list <- list()
-    for (file in latest_files$file) {
+    for (file_row in latest_files$file) {
         controller_file <- autometric::log_read(
-            file,
+            file_row,
             units_time = "seconds",
             units_memory = "megabytes",
             units_cpu = "percentage"
@@ -66,14 +68,32 @@ reading_worker_stats <- function() {
                 process_id = pid,
                 memory_used_mb = resident
             ) |>
-            dplyr::select(-version) |>
+            dplyr::select(-c(version, virtual)) |>
             dplyr::filter(phase != "__DEFAULT__")
 
-        controller_stats_list[[file]] <- controller_file
+        # extract last execution time of worker
+        # NOTE: because we select the latest file for each worker, it does not
+        # mean that the last execution of the pipeline used this worker (only if
+        # there is enough work to do)
+        last_execution <- latest_files |>
+            dplyr::filter(file == file_row) |>
+            dplyr::select(last_execution = mtime) |>
+            dplyr::pull()
+
+        controller_file <- controller_file |>
+            dplyr::mutate(
+                last_execution = last_execution
+            ) |>
+            dplyr::relocate(last_execution, .after = worker)
+
+        controller_stats_list[[file_row]] <- controller_file
     }
 
     # combine all worker stats
     controller_stats <- data.table::rbindlist(controller_stats_list)
+
+    controller_stats <- controller_stats |>
+        dplyr::arrange(worker, last_execution)
 
     #--------------------------------------------------
     # export stats
