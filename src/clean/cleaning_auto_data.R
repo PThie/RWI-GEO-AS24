@@ -119,10 +119,16 @@ cleaning_auto_data <- function (
             )
         )
 
+        # extract unique values
+        unique_values <- unique(auto_data_prep[[col]])
+
         # for fornewmarket check that always 0 because removing
         if (col == "fornewmarket") {
+            unique_values <- unique_values[
+                !unique_values %in% helpers_missing_values()[["all_missings"]]
+            ]
             targets::tar_assert_true(
-                unique(auto_data_prep[[col]]) == 0,
+                unique_values == 0,
                 msg = glue::glue(
                     "!!! WARNING: ",
                     "The unique value for {col} is not as expected.",
@@ -134,7 +140,12 @@ cleaning_auto_data <- function (
         # for currencyid: it should be all missing as all prices are in Euro
         if (col == "currencyid") {
             targets::tar_assert_true(
-                unique(auto_data_prep[[col]]) == helpers_missing_values()[["not_specified"]],
+                all(
+                    unique_values %in% c(
+                        helpers_missing_values()[["not_specified"]],
+                        "EUR"
+                    )
+                ),
                 msg = glue::glue(
                     "!!! WARNING: ",
                     "The unique value for {col} is not as expected.",
@@ -145,8 +156,11 @@ cleaning_auto_data <- function (
 
         # for stateid: check if always 'A'
         if (col == "stateid") {
+            unique_values <- unique_values[
+                !unique_values %in% helpers_missing_values()[["all_missings"]]
+            ]
             targets::tar_assert_true(
-                unique(auto_data_prep[[col]]) == "A",
+                unique_values == "A",
                 msg = glue::glue(
                     "!!! WARNING: ",
                     "The unique value for {col} is not as expected.",
