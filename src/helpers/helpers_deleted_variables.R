@@ -28,5 +28,4 @@ helpers_deleted_variables <- function() {
     # return
 
     return(cols)
-
 }
