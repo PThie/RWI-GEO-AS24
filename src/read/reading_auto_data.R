@@ -52,6 +52,10 @@ reading_auto_data <- function(
             file,
             encoding = "UTF-8"
         )
+
+        # add file to identify the data point if needed for debugging
+        dta$origin <- file
+
         data_storage[[file]] <- dta
     }
 
