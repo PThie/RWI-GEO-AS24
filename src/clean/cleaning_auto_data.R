@@ -177,14 +177,17 @@ cleaning_auto_data <- function (
 
     #--------------------------------------------------
     # merge countrycode and country_id and fix differences
+    # NOTE: coalesce cannot be used as NA are redefined already
 
     auto_data_prep <- auto_data_prep |>
         dplyr::mutate(
-            countrycode_aux = dplyr::coalesce(
-                country_id,
-                countrycode
+            countrycode_aux = NA_character_,
+            countrycode_aux = dplyr::case_when(
+                country_id == "D" ~ "DE",
+                countrycode == "DE" ~ "DE",
+                TRUE ~ countrycode_aux
             )
-        ) |>
+        )  |>
         dplyr::select(-c("country_id", "countrycode")) |>
         dplyr::rename(countrycode = countrycode_aux)
 
@@ -194,7 +197,7 @@ cleaning_auto_data <- function (
     ]
 
     targets::tar_assert_true(
-        all(unique_countrycode %in% c("DE", "D")),
+        all(unique_countrycode %in% c("DE")),
         msg = glue::glue(
             "!!! WARNING: ",
             "The country codes do not match the expected values.",
@@ -202,14 +205,32 @@ cleaning_auto_data <- function (
         )
     )
 
-    # make countrycodes consistent
-    auto_data_prep <- auto_data_prep |>
-        dplyr::mutate(
-            countrycode = dplyr::case_when(
-                countrycode == "D" ~ "DE",
-                TRUE ~ countrycode
-            )
+    # check that all cases have been considered
+    unique_country_id_raw <- unique(auto_data$country_id)[
+        !is.na(unique(auto_data$country_id))
+    ]
+
+    unique_countrycode_raw <- unique(auto_data$countrycode)[
+        !is.na(unique(auto_data$countrycode))
+    ]
+
+    targets::tar_assert_true(
+        all(unique_country_id_raw %in% c("D")),
+        msg = glue::glue(
+            "!!! WARNING: ",
+            "The country ID does not match the expected values.",
+            " (Error code: cad#8)"
         )
+    )
+
+    targets::tar_assert_true(
+        all(unique_countrycode_raw %in% c("DE")),
+        msg = glue::glue(
+            "!!! WARNING: ",
+            "The country codes do not match the expected values.",
+            " (Error code: cad#9)"
+        )
+    )
 
     #--------------------------------------------------
     # calculate thresholds for censoring
@@ -312,10 +333,12 @@ cleaning_auto_data <- function (
                 ~ dplyr::case_when(
                     (
                         .x <= thresholds_list[[dplyr::cur_column()]][["value"]][1] &
+                        .x != helpers_missing_values()[["not_specified"]] &
                         .x != helpers_missing_values()[["other"]]
                     ) ~ helpers_missing_values()[["implausible"]],
                     (
                         .x >= thresholds_list[[dplyr::cur_column()]][["value"]][2] &
+                        .x != helpers_missing_values()[["not_specified"]] &
                         .x != helpers_missing_values()[["other"]]
                     ) ~ helpers_missing_values()[["implausible"]],
                     TRUE ~ .x
@@ -398,7 +421,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The zip codes do not have the expected length of 5 digits.",
-            " (Error code: cad#8)"
+            " (Error code: cad#10)"
         )
     )
 
@@ -412,7 +435,7 @@ cleaning_auto_data <- function (
             "!!! WARNING: ",
             "The transmissionid contains values other than 'A', 'M', or 'S'. ",
             "Adjust recoding.",
-            " (Error code: cad#9)"
+            " (Error code: cad#11)"
         )
     )
     
@@ -484,7 +507,7 @@ cleaning_auto_data <- function (
             msg = glue::glue(
                 "!!! WARNING: ",
                 "The {var} dates do not have the expected length of 10 characters.",
-                " (Error code: cad#10)"
+                " (Error code: cad#12)"
             )
         )
 
@@ -494,7 +517,7 @@ cleaning_auto_data <- function (
             msg = glue::glue(
                 "!!! WARNING: ",
                 "The {var} dates do include letters",
-                " (Error code: cad#11)"
+                " (Error code: cad#13)"
             )
         )
     }
@@ -562,7 +585,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The city names include numbers.",
-            " (Error code: cad#12)"
+            " (Error code: cad#14)"
         )
     )
 
@@ -579,7 +602,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The country zip codes do not have the expected length of 4 digits.",
-            " (Error code: cad#13)"
+            " (Error code: cad#15)"
         )
     )
 
@@ -594,7 +617,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The country zip codes do not match the country code.",
-            " (Error code: cad#14)"
+            " (Error code: cad#16)"
         )
     )
 
@@ -609,7 +632,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The country codes do not match the expected values.",
-            " (Error code: cad#15)"
+            " (Error code: cad#17)"
         )
     )
 
