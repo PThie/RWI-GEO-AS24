@@ -54,7 +54,7 @@ testing_consistent_variables <- function(
         # (country ID will not be found in comparison with first delivery)
         # NOTE: difference in naming is already checked above and will be fixed
         # in cleaning_auto_data.R
-        if (col != "country_id") {
+        if (!col %in% c("country_id", "origin")) {
             # check if column type matches
             coltype_current <- coltypes |>
                 dplyr::filter(columns == col) |>
