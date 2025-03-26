@@ -6,7 +6,7 @@ cleaning_auto_data <- function (
     #' 
     #' @description This function cleans the raw AutoScout24 dataset.
     #' 
-    #' @param auto_data_raw Dataframe with raw AutoScout24 data
+    #' @param auto_data Dataframe with raw AutoScout24 data
     #' @param municipalities Spatial dataframe with municipality shapes
     #' 
     #' @return Dataframe with cleaned AutoScout24 data
@@ -197,7 +197,10 @@ cleaning_auto_data <- function (
     ]
 
     targets::tar_assert_true(
-        all(unique_countrycode %in% c("DE")),
+        all(
+            unique(auto_data_prep$countrycode) %in%
+                config_globals()[["possible_country_codes"]]
+        ),
         msg = glue::glue(
             "!!! WARNING: ",
             "The country codes do not match the expected values.",
@@ -379,6 +382,22 @@ cleaning_auto_data <- function (
             ),
             #--------------------------------------------------
             # zip-code
+            # remove white space around zip code "00  "
+            # NOTE: this is a special case since somehow these are not regular
+            # white-spaces
+            zip = stringi::stri_replace_all_fixed(zip, "\uFFFC", ""),
+            # fix that some zip codes include ".0" (especially earlier waves)
+            zip = dplyr::case_when(
+                stringr::str_detect(zip, "\\.0$") ~ stringr::str_remove(zip, "\\.0$"),
+                TRUE ~ zip
+            ),
+            # fix other special cases
+            zip = dplyr::case_when(
+                stringr::str_detect(zip, "‘") ~ stringr::str_remove(zip, "‘"),
+                stringr::str_detect(zip, "\\[") ~ stringr::str_remove(zip, "\\["),
+                TRUE ~ zip
+            ),
+            # fix length of zip code strings
             zip = dplyr::case_when(
                 # censor implausible values (values too short)
                 nchar(zip) < 4 ~ as.character(
@@ -390,6 +409,9 @@ cleaning_auto_data <- function (
                     width = 5,
                     side = "left",
                     pad = "0"
+                ),
+                nchar(zip) > 5 ~ as.character(
+                    helpers_missing_values()[["implausible"]]
                 ),
                 TRUE ~ zip
             ),
@@ -428,8 +450,8 @@ cleaning_auto_data <- function (
     # test that transmissionID only contains three types
     # NOTE: test on original data before recoding into numbers
     targets::tar_assert_true(
-        all(unique(auto_data_raw$transmissionid) %in% 
-            c("A", "M", "S", "") # NOTE: NA is not yet recoded
+        all(unique(auto_data$transmissionid) %in% 
+            c("A", "M", "S", "", NA) # NOTE: NA is not yet recoded
         ) == TRUE,
         msg = glue::glue(
             "!!! WARNING: ",
@@ -476,6 +498,16 @@ cleaning_auto_data <- function (
     implausible_values_df <- data.table::rbindlist(implausible_values_list) |>
         dplyr::arrange(dplyr::desc(implausible_values_perc))
 
+    # check that all columns have been considered
+    targets::tar_assert_true(
+        nrow(implausible_values_df) == ncol(auto_data_prep),
+        msg = glue::glue(
+            "!!! WARNING: ",
+            "Not all columns have been considered for the implausible values.",
+            " (Error code: cad#12)"
+        )
+    )
+
     # export
     openxlsx::write.xlsx(
         implausible_values_df,
@@ -507,7 +539,7 @@ cleaning_auto_data <- function (
             msg = glue::glue(
                 "!!! WARNING: ",
                 "The {var} dates do not have the expected length of 10 characters.",
-                " (Error code: cad#12)"
+                " (Error code: cad#13)"
             )
         )
 
@@ -517,7 +549,7 @@ cleaning_auto_data <- function (
             msg = glue::glue(
                 "!!! WARNING: ",
                 "The {var} dates do include letters",
-                " (Error code: cad#13)"
+                " (Error code: cad#14)"
             )
         )
     }
@@ -585,7 +617,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The city names include numbers.",
-            " (Error code: cad#14)"
+            " (Error code: cad#15)"
         )
     )
 
@@ -602,39 +634,31 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The country zip codes do not have the expected length of 4 digits.",
-            " (Error code: cad#15)"
+            " (Error code: cad#16)"
         )
     )
 
     # test that the country identifier in zipcode matches country code
+    auto_data_prep <- auto_data_prep |>
+        dplyr::mutate(
+            countrycode_aux = substring(country_zip_code, 1, 2)
+        )
+
     targets::tar_assert_true(
         length(which(
-            substring(auto_data_prep$country_zip_code[
-                !auto_data_prep$country_zip_code %in% as.character(helpers_missing_values()[["all_missings"]])
-            ], 1, 2) !=
+            unique(auto_data_prep$countrycode_aux[
+                !auto_data_prep$countrycode_aux %in% as.character(helpers_missing_values()[["all_missings"]])
+            ]) !=
             auto_data_prep$countrycode
         )) == 0,
         msg = glue::glue(
             "!!! WARNING: ",
             "The country zip codes do not match the country code.",
-            " (Error code: cad#16)"
-        )
-    )
-
-    #--------------------------------------------------
-    # test for country code
-
-    targets::tar_assert_true(
-        all(
-            unique(auto_data_prep$countrycode) %in%
-                config_globals()[["possible_country_codes"]]
-        ),
-        msg = glue::glue(
-            "!!! WARNING: ",
-            "The country codes do not match the expected values.",
             " (Error code: cad#17)"
         )
     )
+
+    auto_data_prep$countrycode_aux <- NULL
 
     #--------------------------------------------------
     # add version and delivery of the data
