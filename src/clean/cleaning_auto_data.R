@@ -673,6 +673,11 @@ cleaning_auto_data <- function (
         )
 
     #--------------------------------------------------
+    # remove origin (after all checks have been done)
+
+    auto_data_prep$origin <- NULL
+
+    #--------------------------------------------------
     # return
 
     return(auto_data_prep)
