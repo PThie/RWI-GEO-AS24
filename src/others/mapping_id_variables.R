@@ -38,6 +38,76 @@ mapping_id_variables <- function(
             mapping_table <- mapping_tables[[var]]
 
             #--------------------------------------------------
+            # replace with missings if not in mapping tables
+            # NOTE: this is only a partial fix. we need clarification from AS24
+            # why these are missings in the mapping tables
+            # TODO: remove once the mapping tables are updated
+
+            if (var == "makeid") {
+                auto_data <- auto_data |>
+                    dplyr::mutate(
+                        makeid = dplyr::case_when(
+                            makeid %in% c(
+                                51768,
+                                16412,
+                                51808,
+                                51792,
+                                16405,
+                                51771,
+                                16425,
+                                16437,
+                                16391,
+                                51904
+                            ) ~ helpers_missing_values()[["other"]],
+                            TRUE ~ makeid
+                        )
+                    )
+            }
+
+            if (var == "modelid") {
+                auto_data <- auto_data |>
+                    dplyr::mutate(
+                        modelid = dplyr::case_when(
+                            modelid %in% c(
+                                76880,
+                                76874,
+                                76873,
+                                15165,
+                                19220,
+                                15944,
+                                19219,
+                                15720,
+                                19233,
+                                19753,
+                                20914,
+                                15820,
+                                19509,
+                                75257,
+                                74963,
+                                20768,
+                                74443,
+                                21164,
+                                74263,
+                                19666,
+                                76141,
+                                76140
+                            ) ~ helpers_missing_values()[["other"]],
+                            TRUE ~ modelid
+                        )
+                    )
+            }
+
+            if (var == "emissionstickerid") {
+                auto_data <- auto_data |>
+                    dplyr::mutate(
+                        emissionstickerid = dplyr::case_when(
+                            emissionstickerid == 5 ~ helpers_missing_values()[["other"]],
+                            TRUE ~ emissionstickerid
+                        )
+                    )
+            }
+
+            #--------------------------------------------------
             # check that unique values in the data can be found in the mapping tables
 
             unique_present_values <- unique(auto_data[[var]])
@@ -60,7 +130,7 @@ mapping_id_variables <- function(
                     " (Error code: miv#2)"
                 )
             )
-
+            
             #--------------------------------------------------
             # merge actual data and mapping table
 
