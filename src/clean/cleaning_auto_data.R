@@ -106,67 +106,17 @@ cleaning_auto_data <- function (
         )
 
     #--------------------------------------------------
-    # set missings because some variables are not available for all years
-
-    if (config_globals()[["current_delivery"]] == "Jan_2025") {
-        older_data <- auto_data_prep |>
-            dplyr::filter(grepl("2019|2020|2021", origin))
-
-        newer_data <- auto_data_prep |>
-            dplyr::filter(!grepl("2019|2020|2021", origin))
-
-        for (var in helpers_newer_variables()) {
-            # make sure that the variable is always missing
-            if (typeof(older_data[[var]]) == "character") {
-                statement <- unique(older_data[[var]]) == as.character(
-                    helpers_missing_values()[["not_specified"]]
-                )
-            } else {
-                statement <- unique(older_data[[var]]) == helpers_missing_values()[["not_specified"]]
-            }
-            
-            targets::tar_assert_true(
-                statement,
-                msg = glue::glue(
-                    "!!! WARNING: ",
-                    "The variable {var} is not missing in the older data.",
-                    " (Error code: cad#3)"
-                )
-            )
-
-            # swap missing type
-            if (typeof(older_data[[var]]) == "character") {
-                older_data[[var]] <- as.character(
-                    helpers_missing_values()[["not_available"]]
-                )
-            } else {
-                older_data[[var]] <- helpers_missing_values()[["not_available"]]
-            }
-        }
-
-        # combine the two datasets
-        auto_data_prep <- rbind(older_data, newer_data)
-    } else {
-        targets::tar_error(
-            message = glue::glue(
-                "Check if IF condition applies for the current delivery.",
-                " (Error code: cad#4)"
-            ),
-            class = "CustomError"
-        )
-    }
-
-    #--------------------------------------------------
     # exclude variables
     
     for (col in helpers_deleted_variables()) {
+        print(col)
         # throw warning if column does not exist
         targets::tar_assert_true(
             col %in% names(auto_data_prep),
             msg = glue::glue(
                 "!!! WARNING: ",
                 "The column {col} does not exist in the data set.",
-                " (Error code: cad#5)"
+                " (Error code: cad#3)"
             )
         )
 
@@ -183,7 +133,7 @@ cleaning_auto_data <- function (
                 msg = glue::glue(
                     "!!! WARNING: ",
                     "The unique value for {col} is not as expected.",
-                    " (Error code: cad#6)"
+                    " (Error code: cad#4)"
                 )
             )
         }
@@ -200,7 +150,7 @@ cleaning_auto_data <- function (
                 msg = glue::glue(
                     "!!! WARNING: ",
                     "The unique value for {col} is not as expected.",
-                    " (Error code: cad#7)"
+                    " (Error code: cad#5)"
                 )
             )
         }
@@ -215,7 +165,7 @@ cleaning_auto_data <- function (
                 msg = glue::glue(
                     "!!! WARNING: ",
                     "The unique value for {col} is not as expected.",
-                    " (Error code: cad#8)"
+                    " (Error code: cad#6)"
                 )
             )
         }
@@ -255,7 +205,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The country codes do not match the expected values.",
-            " (Error code: cad#9)"
+            " (Error code: cad#7)"
         )
     )
 
@@ -273,7 +223,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The country ID does not match the expected values.",
-            " (Error code: cad#10)"
+            " (Error code: cad#8)"
         )
     )
 
@@ -282,9 +232,60 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The country codes do not match the expected values.",
-            " (Error code: cad#11)"
+            " (Error code: cad#9)"
         )
     )
+
+    #--------------------------------------------------
+    # set missings because some variables are not available for all years
+
+    if (config_globals()[["current_delivery"]] == "Jan_2025") {
+        older_data <- auto_data_prep |>
+            dplyr::filter(grepl("2019|2020|2021", origin))
+
+        newer_data <- auto_data_prep |>
+            dplyr::filter(!grepl("2019|2020|2021", origin))
+
+        for (var in helpers_newer_variables()) {
+            # make sure that the variable is always missing
+            if (typeof(older_data[[var]]) == "character") {
+                statement <- unique(older_data[[var]]) == as.character(
+                    helpers_missing_values()[["not_specified"]]
+                )
+            } else {
+                statement <- unique(older_data[[var]]) == helpers_missing_values()[["not_specified"]]
+            }
+            
+            targets::tar_assert_true(
+                statement,
+                msg = glue::glue(
+                    "!!! WARNING: ",
+                    "The variable {var} is not missing in the older data.",
+                    " (Error code: cad#10)"
+                )
+            )
+
+            # swap missing type
+            if (typeof(older_data[[var]]) == "character") {
+                older_data[[var]] <- as.character(
+                    helpers_missing_values()[["not_available"]]
+                )
+            } else {
+                older_data[[var]] <- helpers_missing_values()[["not_available"]]
+            }
+        }
+
+        # combine the two datasets
+        auto_data_prep <- rbind(older_data, newer_data)
+    } else {
+        targets::tar_error(
+            message = glue::glue(
+                "Check if IF condition applies for the current delivery.",
+                " (Error code: cad#11)"
+            ),
+            class = "CustomError"
+        )
+    }
 
     #--------------------------------------------------
     # calculate thresholds for censoring
