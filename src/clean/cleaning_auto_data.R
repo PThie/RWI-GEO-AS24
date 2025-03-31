@@ -104,7 +104,58 @@ cleaning_auto_data <- function (
                 )
             )
         )
-    
+
+    #--------------------------------------------------
+    # set missings because some variables are not available for all years
+
+    if (config_globals()[["current_delivery"]] == "Jan_2025") {
+        older_data <- auto_data_prep |>
+            dplyr::filter(grepl("2019|2020|2021", origin))
+
+        newer_data <- auto_data_prep |>
+            dplyr::filter(!grepl("2019|2020|2021", origin))
+
+        for (var in helpers_newer_variables()) {
+            # make sure that the variable is always missing
+            if (typeof(older_data[[var]]) == "character") {
+                statement <- unique(older_data[[var]]) == as.character(
+                    helpers_missing_values()[["not_specified"]]
+                )
+            } else {
+                statement <- unique(older_data[[var]]) == helpers_missing_values()[["not_specified"]]
+            }
+            
+            targets::tar_assert_true(
+                statement,
+                msg = glue::glue(
+                    "!!! WARNING: ",
+                    "The variable {var} is not missing in the older data.",
+                    " (Error code: cad#3)"
+                )
+            )
+
+            # swap missing type
+            if (typeof(older_data[[var]]) == "character") {
+                older_data[[var]] <- as.character(
+                    helpers_missing_values()[["not_available"]]
+                )
+            } else {
+                older_data[[var]] <- helpers_missing_values()[["not_available"]]
+            }
+        }
+
+        # combine the two datasets
+        auto_data_prep <- rbind(older_data, newer_data)
+    } else {
+        targets::tar_error(
+            message = glue::glue(
+                "Check if IF condition applies for the current delivery.",
+                " (Error code: cad#4)"
+            ),
+            class = "CustomError"
+        )
+    }
+
     #--------------------------------------------------
     # exclude variables
     
@@ -115,7 +166,7 @@ cleaning_auto_data <- function (
             msg = glue::glue(
                 "!!! WARNING: ",
                 "The column {col} does not exist in the data set.",
-                " (Error code: cad#3)"
+                " (Error code: cad#5)"
             )
         )
 
@@ -132,7 +183,7 @@ cleaning_auto_data <- function (
                 msg = glue::glue(
                     "!!! WARNING: ",
                     "The unique value for {col} is not as expected.",
-                    " (Error code: cad#4)"
+                    " (Error code: cad#6)"
                 )
             )
         }
@@ -149,7 +200,7 @@ cleaning_auto_data <- function (
                 msg = glue::glue(
                     "!!! WARNING: ",
                     "The unique value for {col} is not as expected.",
-                    " (Error code: cad#5)"
+                    " (Error code: cad#7)"
                 )
             )
         }
@@ -164,7 +215,7 @@ cleaning_auto_data <- function (
                 msg = glue::glue(
                     "!!! WARNING: ",
                     "The unique value for {col} is not as expected.",
-                    " (Error code: cad#6)"
+                    " (Error code: cad#8)"
                 )
             )
         }
@@ -204,7 +255,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The country codes do not match the expected values.",
-            " (Error code: cad#7)"
+            " (Error code: cad#9)"
         )
     )
 
@@ -222,7 +273,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The country ID does not match the expected values.",
-            " (Error code: cad#8)"
+            " (Error code: cad#10)"
         )
     )
 
@@ -231,7 +282,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The country codes do not match the expected values.",
-            " (Error code: cad#9)"
+            " (Error code: cad#11)"
         )
     )
 
@@ -443,7 +494,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The zip codes do not have the expected length of 5 digits.",
-            " (Error code: cad#10)"
+            " (Error code: cad#12)"
         )
     )
 
@@ -457,7 +508,7 @@ cleaning_auto_data <- function (
             "!!! WARNING: ",
             "The transmissionid contains values other than 'A', 'M', or 'S'. ",
             "Adjust recoding.",
-            " (Error code: cad#11)"
+            " (Error code: cad#13)"
         )
     )
     
@@ -504,7 +555,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "Not all columns have been considered for the implausible values.",
-            " (Error code: cad#12)"
+            " (Error code: cad#14)"
         )
     )
 
@@ -539,7 +590,7 @@ cleaning_auto_data <- function (
             msg = glue::glue(
                 "!!! WARNING: ",
                 "The {var} dates do not have the expected length of 10 characters.",
-                " (Error code: cad#13)"
+                " (Error code: cad#15)"
             )
         )
 
@@ -549,7 +600,7 @@ cleaning_auto_data <- function (
             msg = glue::glue(
                 "!!! WARNING: ",
                 "The {var} dates do include letters",
-                " (Error code: cad#14)"
+                " (Error code: cad#16)"
             )
         )
     }
@@ -617,7 +668,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The city names include numbers.",
-            " (Error code: cad#15)"
+            " (Error code: cad#17)"
         )
     )
 
@@ -634,7 +685,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The country zip codes do not have the expected length of 4 digits.",
-            " (Error code: cad#16)"
+            " (Error code: cad#18)"
         )
     )
 
@@ -654,7 +705,7 @@ cleaning_auto_data <- function (
         msg = glue::glue(
             "!!! WARNING: ",
             "The country zip codes do not match the country code.",
-            " (Error code: cad#17)"
+            " (Error code: cad#19)"
         )
     )
 
