@@ -109,7 +109,6 @@ cleaning_auto_data <- function (
     # exclude variables
     
     for (col in helpers_deleted_variables()) {
-        print(col)
         # throw warning if column does not exist
         targets::tar_assert_true(
             col %in% names(auto_data_prep),
