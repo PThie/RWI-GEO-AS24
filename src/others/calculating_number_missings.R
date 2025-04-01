@@ -58,7 +58,7 @@ calculating_number_missings <- function(
             "info",
             "number_of_missings.xlsx"
         ),
-        overwrite = TRUE
+        rowNames = FALSE
     )
 
     #--------------------------------------------------
