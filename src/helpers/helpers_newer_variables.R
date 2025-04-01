@@ -14,36 +14,42 @@ helpers_newer_variables <- function() {
         "power",                    
         "transmissionid",
         "city",                 
-        "country_zip_code",
-        "year",                     
-        "month",
-        "day",                      
+        "country_zip_code",                   
         "askingprice",
         "bodycolorid",              
         "co2emissions",
-        "countrycode",              
-        "currencyid",
         "cylinders",                
         "displacement",
         "efficiencyclassid",       
         "emissionpollutionclassid",
         "emissionstickerid",        
         "equipmentidfirst",
-        "fornewmarket",             
         "fuelconsumptioncity",
         "fuelconsumptioncountry",   
         "fuelconsumptionmixed",    
         "gears",                    
         "interiorcolorid",
         "numberofdoors",            
-        "offertypeid",
         "previousowners",           
         "seats",
-        "stateid",                  
         "vatdeductible",
-        "visibilitytypeid",         
         "weight"
     )
+
+    # check that variables are not in deleted variables list
+    # otherwise the pipeline breaks because you try to replace values for a 
+    # variable that has been removed in a previous step
+    for (var in vars) {
+        if (var %in% helpers_deleted_variables()) {
+            targets::tar_error(
+                message = glue::glue(
+                    "Variable {var} is in the deleted variables list. ",
+                    "Please check if this is correct. (Error code: hnv#1)"
+                ),
+                class = "CustomError"
+            )
+        }
+    }
 
     #--------------------------------------------------
     # return
