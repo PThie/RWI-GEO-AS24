@@ -98,7 +98,7 @@ reading_worker_stats <- function() {
     #--------------------------------------------------
     # export stats
 
-    w <- 21
+    w <- 30
     names(controller_stats) <- format(
         names(controller_stats),
         width = w,
