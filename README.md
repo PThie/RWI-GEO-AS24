@@ -28,4 +28,4 @@ Please contact [Dr. Patrick Thiel](https://www.rwi-essen.de/rwi/team/person/patr
 
 ## Disclaimer
 
-All rights reserved to RWI and the author of the code, [Dr. Patrick Thiel](https://www.rwi-essen.de/rwi/team/person/patrick-thiel).
+All rights reserved to RWI and the author of the code, [Dr. Patrick Thiel](https://www.rwi-essen.de/rwi/team/person/patrick-thiel). In the case of used libraries, the main file ([_targets.R](https://github.com/PThie/RWI-GEO-AS24/blob/main/_targets.R)) should be consulted. For a comprehensive list, including direct dependencies, refer to the [renv.lock file](https://github.com/PThie/RWI-GEO-AS24/blob/main/renv.lock). Please note that the terms of conditions of each library apply.
