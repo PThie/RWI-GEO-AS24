@@ -48,6 +48,20 @@ calculating_number_missings <- function(
     missings <- data.table::rbindlist(missings_list)
 
     #--------------------------------------------------
+    # export
+
+    openxlsx::write.xlsx(
+        missings,
+        file.path(
+            config_paths()[["output_path"]],
+            config_globals()[["next_version"]],
+            "info",
+            "number_of_missings.xlsx"
+        ),
+        rowNames = FALSE
+    )
+
+    #--------------------------------------------------
     # return
 
     return(missings)

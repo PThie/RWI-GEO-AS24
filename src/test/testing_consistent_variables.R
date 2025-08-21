@@ -31,14 +31,16 @@ testing_consistent_variables <- function(
     for (col in coltypes$columns) {
         # check if column in in original set of variables (first delivery)
         if (!(col %in% column_types_benchmark$columns)) {
-            cli::cli_alert_danger(
-                cli::col_red(
-                    "The following variable is not consistent with original data: ",
-                    col
+            if (!col %in% config_fixed_variables_consistency()[["fixed_names_vars"]]) {
+                cli::cli_alert_danger(
+                    cli::col_red(
+                        "The following variable is not consistent with original data: ",
+                        col
+                    )
                 )
-            )
-            # store the variable that needs to be fixed
-            fix_columns <- c(fix_columns, col)
+                # store the variable that needs to be fixed
+                fix_columns <- c(fix_columns, col)
+            }
         }
     }
 
@@ -48,26 +50,34 @@ testing_consistent_variables <- function(
     fix_types <- c()
 
     for (col in coltypes$columns) {
-        # check if column type matches
-        coltype_current <- coltypes |>
-            dplyr::filter(columns == col) |>
-            dplyr::select(columns_types) |>
-            dplyr::pull()
+        # ignore country ID because this is equal to countrycode on later waves
+        # (country ID will not be found in comparison with first delivery)
+        # NOTE: difference in naming is already checked above and will be fixed
+        # in cleaning_auto_data.R
+        if (!col %in% c("country_id", "origin")) {
+            # check if column type matches
+            coltype_current <- coltypes |>
+                dplyr::filter(columns == col) |>
+                dplyr::select(columns_types) |>
+                dplyr::pull()
 
-        coltype_benchmark <- column_types_benchmark |>
-            dplyr::filter(columns == col) |>
-            dplyr::select(columns_types) |>
-            dplyr::pull()
+            coltype_benchmark <- column_types_benchmark |>
+                dplyr::filter(columns == col) |>
+                dplyr::select(columns_types) |>
+                dplyr::pull()
 
-        if (coltype_current != coltype_benchmark) {
-            cli::cli_alert_danger(
-                cli::col_red(
-                    "The following variable has a different type than in the original data: ",
-                    col
-                )
-            )
-            # store the variable that needs to be fixed
-            fix_types <- c(fix_types, col)
+            if (coltype_current != coltype_benchmark) {
+                if (!col %in% config_fixed_variables_consistency()[["fixed_types_vars"]]) {
+                    cli::cli_alert_danger(
+                        cli::col_red(
+                            "The following variable has a different type than in the original data: ",
+                            col
+                        )
+                    )
+                    # store the variable that needs to be fixed
+                    fix_types <- c(fix_types, col)
+                }
+            }
         }
     }
 
@@ -77,7 +87,7 @@ testing_consistent_variables <- function(
     # test for consistent variables names
     targets::tar_assert_true(
         all(
-            fix_columns %in% config_fixed_variables()[["fixed_names_vars"]]
+            fix_columns %in% config_fixed_variables_consistency()[["fixed_names_vars"]]
         ),
         msg = glue::glue(
             "!!! WARNING: ",
@@ -89,7 +99,7 @@ testing_consistent_variables <- function(
     # test for consistent variable types
     targets::tar_assert_true(
         all(
-            fix_types %in% config_fixed_variables()[["fixed_types_vars"]]
+            fix_types %in% config_fixed_variables_consistency()[["fixed_types_vars"]]
         ),
         msg = glue::glue(
             "!!! WARNING: ",

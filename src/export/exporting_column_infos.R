@@ -24,20 +24,46 @@ exporting_column_infos <- function(
 
         #--------------------------------------------------
         # export
+        # NOTE: version is hard coded because the version in globals changes
 
         openxlsx::write.xlsx(
             coltypes,
             file.path(
                 config_paths()[["output_path"]],
-                config_globals()[["next_version"]],
+                "v1",
                 "info",
                 "column_types.xlsx"
             )
         )
-
+    } else {
         #--------------------------------------------------
-        # return
+        # read column types from benchmark
+        # NOTE: version is hard coded because the version in globals changes
 
-        return(coltypes)
+        coltypes <- openxlsx::read.xlsx(
+            file.path(
+                config_paths()[["output_path"]],
+                "v1",
+                "info",
+                "column_types.xlsx"
+            )
+        )
     }
+
+    #--------------------------------------------------
+    # test that dataset is not empty
+
+    targets::tar_assert_nonempty(
+        coltypes,
+        msg = glue::glue(
+            "!!! WARNING:",
+            " Column types dataset is empty.",
+            " (Error code: eci#1)"
+        )
+    )
+
+    #--------------------------------------------------
+    # return
+
+    return(coltypes)
 }
