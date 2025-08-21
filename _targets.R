@@ -29,6 +29,7 @@ suppressPackageStartupMessages({
     library(cli)
     library(purrr)
     library(autometric)
+    library(openxlsx)
 })
 
 #--------------------------------------------------
