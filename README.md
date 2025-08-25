@@ -20,7 +20,7 @@ Data users shall cite the datasets properly with the respective DOIs. The DOIs o
 
 ## More Information
 
-- Repository for V2.0: [![DOI:10.5281/zenodo.16918103](http://img.shields.io/badge/DOI-10.5281/zenodo.15423311-048BC0.svg)](https://zenodo.org/account/settings/github/repository/PThie/RWI-GEO-AS24)
+- Repository for V2.0: [![DOI:10.5281/zenodo.16918103](http://img.shields.io/badge/DOI-10.5281/zenodo.16918103-048BC0.svg)](https://zenodo.org/account/settings/github/repository/PThie/RWI-GEO-AS24)
 
 ## Contact Person
 
