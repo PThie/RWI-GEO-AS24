@@ -12,3 +12,4 @@ logs/
 documentation/
 .lintr
 vertrag_autoscout/
+debug.log
